@@ -5,27 +5,14 @@
 BUILD_DIR=${1:-}
 CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
-BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
 
 # Export DATABASE_URL at build time in case database libraries need it.
 if [ -e "$ENV_DIR/DATABASE_URL" ]; then
   export DATABASE_URL="$(cat $ENV_DIR/DATABASE_URL)";
 fi
 
-VERSION=stable
-
 # Standard paranoia.
 set -eu
-
-# Handle people who still aren't using Rustup.
-if [ ! -z ${URL+x} ]; then
-    >&2 cat <<EOF
-heroku-pack-rust has switched to using rustup.  You no longer need a
-URL field in RustConfig. Instead, you should just specify a
-rustup-compatible version (such as `1.11`, `stable` or `nighty`) in VERSION.
-EOF
-    exit 1
-fi
 
 export RUSTUP_HOME="$CACHE_DIR/rustup"
 export CARGO_HOME="$CACHE_DIR/cargo"
@@ -36,8 +23,7 @@ mkdir -p "$CACHE_DIR"
 cd "$CACHE_DIR"
 
 if [ -d "$RUSTUP_HOME" ]; then
-    echo "-----> Checking for new releases of Rust $VERSION channel"
-    # It's possible that $VERSION has changed, or the `stable` channel has updated.
+    echo "-----> Checking for new releases of Rust stable channel"
     rustup self update
     rustup update stable
     rustup default stable
@@ -49,8 +35,9 @@ else
     ./rustup.sh -y --default-toolchain "$VERSION"
     rm rustup.sh
 fi
+
 if [ ! -x "$CARGO_HOME/bin/rustc" ]; then
-  echo "failed: Cannot find Rust binaries at $CARGO_HOME"
+  echo "Failed: Cannot find Rust binaries at $CARGO_HOME"
   exit 1
 fi
 
