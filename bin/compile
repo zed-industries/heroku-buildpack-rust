@@ -30,8 +30,8 @@ else
     echo "-----> Downloading rustup"
     curl https://sh.rustup.rs -sSf > rustup.sh
     chmod u+x rustup.sh
-    echo "-----> Using rustup to install Rust channel $VERSION"
-    ./rustup.sh -y --default-toolchain "$VERSION"
+    echo "-----> Using rustup to install Rust channel stable"
+    ./rustup.sh -y --default-toolchain stable
     rm rustup.sh
 fi
 
