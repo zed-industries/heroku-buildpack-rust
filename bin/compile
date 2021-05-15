@@ -16,7 +16,6 @@ set -eu
 
 export RUSTUP_HOME="$CACHE_DIR/rustup"
 export CARGO_HOME="$CACHE_DIR/cargo"
-export PATH="\$CARGO_HOME/bin:\$PATH"
 
 # Switch to our cache directory.
 mkdir -p "$CACHE_DIR"
